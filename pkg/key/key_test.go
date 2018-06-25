@@ -3,7 +3,6 @@ package key
 import (
 	"testing"
 
-	"github.com/davecgh/go-spew/spew"
 	yaml "gopkg.in/yaml.v2"
 )
 
@@ -16,6 +15,11 @@ func TestKeyUnmarshal(t *testing.T) {
 		t.Error(err)
 	}
 
+	if len(k.Usages) != 2 {
+		t.Errorf("key usages not parsed")
+		t.FailNow()
+	}
+
 	if k.Usages[0] != KeyUsageCertify {
 		t.Errorf("key usage not correct: expected %d, got %d", KeyUsageCertify, k.Usages[0])
 		t.FailNow()
@@ -26,12 +30,10 @@ func TestKeyUnmarshal(t *testing.T) {
 		t.FailNow()
 	}
 
-	spew.Dump(k)
-
 }
 
 const testYAML string = `
-userIDs:
+userids:
   - name: Test Case
     email: test@test.io
     comment: NOT A VALID KEY - DO NOT SIGN
@@ -44,7 +46,7 @@ length: 4096
 usages:
   - certify
   - sign
-expireDate: 90d
+expirydate: 90d
 subkeys:
   - algorithm: RSA
     length: 4096

@@ -8,6 +8,12 @@
   version = "v1.1.0"
 
 [[projects]]
+  name = "github.com/ghodss/yaml"
+  packages = ["."]
+  revision = "0ca9ea5df5451ffdf184b4428c902747c2c11cd7"
+  version = "v1.0.0"
+
+[[projects]]
   branch = "master"
   name = "golang.org/x/crypto"
   packages = [
@@ -30,6 +36,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "cee637062656424ad2179eb2893d8ec099fc25f9664911b56ed38f6377c052e4"
+  inputs-digest = "ab4210248b2b737c36fedc9d49d4099da8981bbc0b32914120e70b74a6f99ed6"
   solver-name = "gps-cdcl"
   solver-version = 1

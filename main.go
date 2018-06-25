@@ -17,16 +17,16 @@ import (
 func main() {
 
 	k := key.PrimaryKey{
-		UIDs: &key.UIDs{
-			&key.UID{
+		UserIds: &key.UserIds{
+			&key.UserId{
 				Name:  "Test",
 				Email: "test@not.valid",
 			},
 		},
 		Key: key.Key{
 			Length: 4096,
-			Type:   "RSA",
-			Usage:  []string{"certify", "sign"},
+			Type:   key.KeyTypeRSA,
+			Usages: key.KeyUsages{key.KeyUsageCertify, key.KeyUsageSign},
 			Config: packet.Config{},
 		},
 	}
@@ -35,7 +35,7 @@ func main() {
 
 	config := k.Config
 
-	uid := (*k.UIDs)[0].ToPacket()
+	uid := (*k.UserIds)[0].ToPacket()
 	if uid == nil {
 		return
 	}
@@ -79,9 +79,6 @@ func main() {
 			log.Fatal(err)
 		}
 	}
-	//
-	// yaml, _ := yaml.Marshal(e)
-	// fmt.Println(string(yaml))
 
 	buffer := &bytes.Buffer{}
 

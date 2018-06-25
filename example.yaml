@@ -31,7 +31,7 @@
     - certify
     - sign
 # iso-date|(number[d|w|m|y])
-  expireDate: 90d
+  expiryDate: 90d
   subkeys:
     - type: RSA
       length: 4096

@@ -7,9 +7,10 @@ import (
 	"strings"
 	"time"
 
+	"github.com/davecgh/go-spew/spew"
+	"github.com/ghodss/yaml"
 	"golang.org/x/crypto/openpgp"
 	"golang.org/x/crypto/openpgp/packet"
-	yaml "gopkg.in/yaml.v2"
 )
 
 type KeyUsage uint8
@@ -23,17 +24,17 @@ const (
 	KeyUsageAuthenticate
 )
 
-type KeyAlgorithm uint8
+type KeyType uint8
 
 const (
-	KeyAlgorithmRSA KeyAlgorithm = 1
+	KeyTypeRSA KeyType = 1
 )
 
 type SubKeys []*SubKey
 
 type Key struct {
 	Length                                                  int
-	Algorithm                                               *KeyAlgorithm
+	Type                                                    KeyType
 	Usages                                                  KeyUsages
 	ExpiryDate                                              time.Time
 	Config                                                  packet.Config
@@ -46,8 +47,38 @@ type SubKey struct {
 
 type PrimaryKey struct {
 	Key     `yaml:",inline"`
-	UserIDs *UIDs   `yaml:"userIDs"`
-	SubKeys SubKeys `yaml:"subkeys"`
+	UserIds *UserIds `yaml:"userIDs"`
+	SubKeys SubKeys  `yaml:"subkeys"`
+}
+
+func (k *Key) UnmarshalYAML(unmarshal func(interface{}) error) error {
+	var ak struct {
+		Length                                                  int
+		Type                                                    KeyType
+		Usages                                                  KeyUsages
+		ExpiryDate                                              dateOrDuration
+		Config                                                  packet.Config
+		PreferredSymmetric, PreferredHash, PreferredCompression []uint8
+		UserIds                                                 *UserIds
+		SubKeys                                                 SubKeys
+	}
+	err := unmarshal(&ak)
+	if err != nil {
+		return err
+	}
+
+	spew.Dump(ak)
+
+	k.Length = ak.Length
+	k.Type = ak.Type
+	k.Usages = ak.Usages
+	k.ExpiryDate = time.Time(ak.ExpiryDate)
+	k.Config = ak.Config
+	k.PreferredSymmetric = ak.PreferredSymmetric
+	k.PreferredHash = ak.PreferredHash
+	k.PreferredCompression = ak.PreferredCompression
+
+	return nil
 }
 
 func (u *KeyUsage) UnmarshalYAML(unmarshal func(interface{}) error) error {
@@ -58,27 +89,21 @@ func (u *KeyUsage) UnmarshalYAML(unmarshal func(interface{}) error) error {
 	}
 	switch strings.ToLower(s) {
 	case "certify":
-		ku := KeyUsageCertify
-		u = &ku
+		*u = KeyUsageCertify
 	case "sign":
-		ku := KeyUsageSign
-		u = &ku
+		*u = KeyUsageSign
 	case "encrypt":
-		ku := KeyUsageEncrypt
-		u = &ku
+		*u = KeyUsageEncrypt
 	case "authenticate":
-		ku := KeyUsageAuthenticate
-		u = &ku
+		*u = KeyUsageAuthenticate
 	default:
 		return errors.New("unknown usage type: " + s)
 	}
 
-	fmt.Println(*u)
-
 	return nil
 }
 
-func (a *KeyAlgorithm) UnmarshalYAML(unmarshal func(interface{}) error) error {
+func (a *KeyType) UnmarshalYAML(unmarshal func(interface{}) error) error {
 	var s string
 	err := unmarshal(&s)
 	if err != nil {
@@ -86,8 +111,7 @@ func (a *KeyAlgorithm) UnmarshalYAML(unmarshal func(interface{}) error) error {
 	}
 	switch strings.ToUpper(s) {
 	case "RSA":
-		ka := KeyAlgorithmRSA
-		a = &ka
+		*a = KeyTypeRSA
 	default:
 		return errors.New("unknown algorithm type: " + s)
 	}
