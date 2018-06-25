@@ -1,0 +1,43 @@
+# Key-Type: RSA
+# Key-Length: 4096
+# Key-Usage: sign
+#
+# Subkey-Type: RSA
+# Subkey-Length: 4096
+# Subkey-Usage: encrypt
+#
+# Subkey-Type: RSA
+# Subkey-Length: 4096
+# Subkey-Usage: auth
+#
+# Expire-Date: 90
+#
+# Preferences: SHA512 SHA384 SHA256 AES256 AES CAST5 ZLIB BZIP2 ZIP Uncompressed
+# Keyserver: hkp://pool.sks-keyservers.net
+#
+# Revoker: RSA:{fingerprint}
+
+- userIDs:
+    - name: Test Case
+      email: test@test.io
+      comment: NOT A VALID KEY - DO NOT SIGN
+      primary: true
+    - name: Test Case 2
+      email: nocomment@test.io
+      primary: false
+  algorithm: RSA
+  length: 4096
+  usages:
+    - certify
+    - sign
+# iso-date|(number[d|w|m|y])
+  expireDate: 90d
+  subkeys:
+    - type: RSA
+      length: 4096
+      usage:
+        - encrypt
+    - type: RSA
+      length: 4096
+      usage:
+        - authenticate
