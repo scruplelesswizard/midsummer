@@ -1,6 +1,7 @@
 package key
 
 import (
+	"encoding/json"
 	"fmt"
 	"strconv"
 	"strings"
@@ -9,10 +10,10 @@ import (
 
 type dateOrDuration time.Time
 
-func (dd *dateOrDuration) UnmarshalYAML(unmarshal func(interface{}) error) error {
+func (dd *dateOrDuration) UnmarshalJSON(b []byte) error {
 	var s string
 
-	err := unmarshal(&s)
+	err := json.Unmarshal(b, &s)
 	if err != nil {
 		return err
 	}

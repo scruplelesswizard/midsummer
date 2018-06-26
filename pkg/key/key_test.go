@@ -3,7 +3,7 @@ package key
 import (
 	"testing"
 
-	yaml "gopkg.in/yaml.v2"
+	"github.com/ghodss/yaml"
 )
 
 func TestKeyUnmarshal(t *testing.T) {
@@ -17,6 +17,16 @@ func TestKeyUnmarshal(t *testing.T) {
 
 	if len(k.Usages) != 2 {
 		t.Errorf("key usages not parsed")
+		t.FailNow()
+	}
+
+	if len(*k.SubKeys) != 2 {
+		t.Errorf("subkeys not parsed")
+		t.FailNow()
+	}
+
+	if len(*k.UserIds) != 2 {
+		t.Errorf("userids not parsed")
 		t.FailNow()
 	}
 
@@ -41,12 +51,12 @@ userids:
   - name: Test Case 2
     email: nocomment@test.io
     primary: false
-algorithm: RSA
+type: RSA
 length: 4096
 usages:
   - certify
   - sign
-expirydate: 90d
+expirydate: 30m
 subkeys:
   - algorithm: RSA
     length: 4096
@@ -56,3 +66,28 @@ subkeys:
     length: 4096
     usages:
       - authenticate`
+
+// const testYAML string = `
+// userids:
+//   - name: Test Case
+//     email: test@test.io
+//     comment: NOT A VALID KEY - DO NOT SIGN
+//     primary: true
+//   - name: Test Case 2
+//     email: nocomment@test.io
+//     primary: false
+// type: RSA
+// length: 4096
+// usages:
+//   - certify
+//   - sign
+// expirydate: 2014-05-16T08:28:06.801064-04:00
+// subkeys:
+//   - algorithm: RSA
+//     length: 4096
+//     usages:
+//       - encrypt
+//   - algorithm: RSA
+//     length: 4096
+//     usages:
+//       - authenticate`

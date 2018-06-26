@@ -8,7 +8,6 @@ import (
 	"math"
 	"strings"
 
-	"github.com/chaosaffe/midsummer/pkg/key"
 	"golang.org/x/crypto/openpgp"
 	"golang.org/x/crypto/openpgp/armor"
 	"golang.org/x/crypto/openpgp/packet"
@@ -16,20 +15,11 @@ import (
 
 func main() {
 
-	k := key.PrimaryKey{
-		UserIds: &key.UserIds{
-			&key.UserId{
-				Name:  "Test",
-				Email: "test@not.valid",
-			},
-		},
-		Key: key.Key{
-			Length: 4096,
-			Type:   key.KeyTypeRSA,
-			Usages: key.KeyUsages{key.KeyUsageCertify, key.KeyUsageSign},
-			Config: packet.Config{},
-		},
-	}
+	// TODO: read in file
+
+	// TODO: fingerprint and confirm file
+
+	// TODO: foreach key
 
 	gt := k.Config.Now()
 
@@ -87,22 +77,6 @@ func main() {
 	e.Serialize(w)
 	w.Close()
 
-	// fp := e.PrimaryKey.Fingerprint[:]
-	//
-	// hex := hex.EncodeToString(fp)
-	//
-	// fmt.Println(hex)
-	//
-	// wl, err := pgpwordlist.ToString(fp)
-	// if err != nil {
-	// 	log.Fatal(err)
-	// }
-	//
-	// splitList := strings.Split(wl, " ")
-	//
-	// fmt.Println(groupLine(splitList, 4))
-	//
-	// fmt.Println(buffer.String())
 	r, err := armor.Decode(strings.NewReader(buffer.String()))
 	fromReader := packet.NewReader(r.Body)
 	_, err = openpgp.ReadEntity(fromReader)

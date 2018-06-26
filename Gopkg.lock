@@ -2,10 +2,10 @@
 
 
 [[projects]]
-  name = "github.com/davecgh/go-spew"
-  packages = ["spew"]
-  revision = "346938d642f2ec3594ed81d874461961cd0faa76"
-  version = "v1.1.0"
+  branch = "master"
+  name = "github.com/conformal/yubikey"
+  packages = ["."]
+  revision = "65ac3de5ed8f250baa58a3280ccf5351d241b6a0"
 
 [[projects]]
   name = "github.com/ghodss/yaml"
@@ -36,6 +36,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "ab4210248b2b737c36fedc9d49d4099da8981bbc0b32914120e70b74a6f99ed6"
+  inputs-digest = "45d766fa59f58965e7f90650296e1108385677c880ab1de9b07eed4713bf8f43"
   solver-name = "gps-cdcl"
   solver-version = 1
