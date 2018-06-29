@@ -15,8 +15,8 @@ import (
 )
 
 const (
-	InputYes = "y\n"
-	InputNo  = "n\n"
+	inputYes = "y\n"
+	inputNo  = "n\n"
 )
 
 func main() {
@@ -42,7 +42,7 @@ func main() {
 		}
 	}
 
-	if strings.ToLower(in) == InputNo {
+	if strings.ToLower(in) == inputNo {
 		fmt.Println("Input does not match. Exiting...")
 		os.Exit(1)
 	}
@@ -78,7 +78,7 @@ func main() {
 
 func validInput(s string) bool {
 	s = strings.ToLower(s)
-	valid := s == InputYes || s == InputNo
+	valid := s == inputYes || s == inputNo
 	if !valid {
 		fmt.Printf("\n\nInvalid input. Please try again.\n\n")
 	}

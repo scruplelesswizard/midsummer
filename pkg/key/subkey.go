@@ -10,6 +10,6 @@ type SubKey struct {
 
 type SubKeys []*SubKey
 
-func (sk *SubKey) GenerateSelfSig(keyid *uint64) *packet.Signature {
+func (sk *SubKey) GenerateSelfSig(keyid *uint64) (*packet.Signature, error) {
 	return generateSelfSig(&sk.Key, keyid, packet.SigTypeSubkeyBinding)
 }

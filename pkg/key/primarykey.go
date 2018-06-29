@@ -51,20 +51,25 @@ func (pk *PrimaryKey) Generate() (*openpgp.Entity, error) {
 	return e, nil
 }
 
-func (pk *PrimaryKey) setEntityUIDs(e *openpgp.Entity) {
+func (pk *PrimaryKey) setEntityUIDs(e *openpgp.Entity) error {
 
 	e.Identities = make(map[string]*openpgp.Identity)
 
 	for _, uid := range pk.UserIds.ToPacket() {
 		e.Identities[uid.Id] = &openpgp.Identity{
-			Name:          uid.Name,
-			UserId:        uid,
-			SelfSignature: pk.generateSelfSig(&e.PrimaryKey.KeyId),
+			Name:   uid.Name,
+			UserId: uid,
 		}
+		sig, err := pk.generateSelfSig(&e.PrimaryKey.KeyId)
+		if err != nil {
+			return err
+		}
+		e.Identities[uid.Id].SelfSignature = sig
 	}
+	return nil
 }
 
-func (pk *PrimaryKey) generateSelfSig(keyid *uint64) *packet.Signature {
+func (pk *PrimaryKey) generateSelfSig(keyid *uint64) (*packet.Signature, error) {
 	return generateSelfSig(&pk.Key, keyid, packet.SigTypePositiveCert)
 }
 
@@ -79,10 +84,15 @@ func (pk *PrimaryKey) generateSubKeys(gt time.Time, e *openpgp.Entity) ([]openpg
 			return nil, err
 		}
 
+		sig, err := sk.GenerateSelfSig(&e.PrimaryKey.KeyId)
+		if err != nil {
+			return nil, err
+		}
+
 		sks = append(sks, openpgp.Subkey{
 			PublicKey:  packet.NewRSAPublicKey(gt, &rsaKey.PublicKey),
 			PrivateKey: packet.NewRSAPrivateKey(gt, rsaKey),
-			Sig:        sk.GenerateSelfSig(&e.PrimaryKey.KeyId),
+			Sig:        sig,
 		},
 		)
 

@@ -2,6 +2,7 @@ package key
 
 import (
 	"crypto/rsa"
+	"fmt"
 	"time"
 
 	"golang.org/x/crypto/openpgp/packet"
@@ -22,7 +23,7 @@ func (k *Key) LifetimeSeconds(gt time.Time) *uint32 {
 	return &sec
 }
 
-func generateSelfSig(k *Key, keyid *uint64, sigType packet.SignatureType) *packet.Signature {
+func generateSelfSig(k *Key, keyid *uint64, sigType packet.SignatureType) (*packet.Signature, error) {
 	sig := &packet.Signature{
 		CreationTime:         k.Config.Now(),
 		SigType:              sigType,
@@ -35,16 +36,19 @@ func generateSelfSig(k *Key, keyid *uint64, sigType packet.SignatureType) *packe
 		PreferredCompression: k.PreferredCompression,
 	}
 
-	k.setSignatureFlags(sig)
+	err := k.setSignatureFlags(sig)
+	if err != nil {
+		return nil, err
+	}
 
-	return sig
+	return sig, nil
 }
 
 func (k *Key) generateKey() (*rsa.PrivateKey, error) {
 	return rsa.GenerateKey(k.Config.Random(), k.Length)
 }
 
-func (k *Key) setSignatureFlags(sig *packet.Signature) {
+func (k *Key) setSignatureFlags(sig *packet.Signature) error {
 
 	sig.FlagsValid = true
 
@@ -60,8 +64,8 @@ func (k *Key) setSignatureFlags(sig *packet.Signature) {
 		case KeyUsageAuthenticate:
 			sig.FlagAuthenticate = true
 		default:
-			panic("unknown key usage type")
+			return fmt.Errorf("unknown key usage type")
 		}
 	}
-
+	return nil
 }
