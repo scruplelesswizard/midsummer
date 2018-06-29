@@ -10,3 +10,12 @@ func (u *UserIds) ToPacket() (uids []*packet.UserId) {
 	}
 	return uids
 }
+
+func (u *UserIds) Primary() *UserId {
+	for _, uid := range *u {
+		if uid.Primary {
+			return uid
+		}
+	}
+	return nil
+}

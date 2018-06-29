@@ -49,7 +49,7 @@ const (
 //duration suffix consts
 const (
 	daySuffix   = "d"
-	monthSuffix = "m"
+	monthSuffix = "M"
 	yearSuffix  = "y"
 )
 

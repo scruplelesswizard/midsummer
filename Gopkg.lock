@@ -3,9 +3,9 @@
 
 [[projects]]
   branch = "master"
-  name = "github.com/conformal/yubikey"
+  name = "github.com/chaosaffe/pgpwordlist"
   packages = ["."]
-  revision = "65ac3de5ed8f250baa58a3280ccf5351d241b6a0"
+  revision = "da6dd39aba1f7bd74add0584387eb7a0e0d31d05"
 
 [[projects]]
   name = "github.com/ghodss/yaml"
@@ -23,7 +23,8 @@
     "openpgp/elgamal",
     "openpgp/errors",
     "openpgp/packet",
-    "openpgp/s2k"
+    "openpgp/s2k",
+    "pbkdf2"
   ]
   revision = "a49355c7e3f8fe157a85be2f77e6e269a0f89602"
 
@@ -33,9 +34,19 @@
   revision = "5420a8b6744d3b0345ab293f6fcba19c978f1183"
   version = "v2.2.1"
 
+[[projects]]
+  name = "pault.ag/go/ykpiv"
+  packages = [
+    ".",
+    "internal/bytearray",
+    "internal/pkcs1v15"
+  ]
+  revision = "f28518f20029f7ed12a8ced4fbce8c86981b4c5c"
+  version = "1.1"
+
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "45d766fa59f58965e7f90650296e1108385677c880ab1de9b07eed4713bf8f43"
+  inputs-digest = "b22f1b89fa6e01cade45e3b9a4486296a4e03c8fea89a19e874b128783020eaf"
   solver-name = "gps-cdcl"
   solver-version = 1

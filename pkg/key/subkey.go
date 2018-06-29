@@ -11,7 +11,5 @@ type SubKey struct {
 type SubKeys []*SubKey
 
 func (sk *SubKey) GenerateSelfSig(keyid *uint64) *packet.Signature {
-
 	return generateSelfSig(&sk.Key, keyid, packet.SigTypeSubkeyBinding)
-
 }

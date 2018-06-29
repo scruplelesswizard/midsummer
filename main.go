@@ -1,99 +1,120 @@
 package main
 
 import (
-	"bytes"
-	"crypto/rsa"
+	"bufio"
 	"fmt"
-	"log"
-	"math"
+	"io/ioutil"
+	"os"
 	"strings"
 
+	"github.com/chaosaffe/midsummer/pkg/fingerprint"
+	"github.com/chaosaffe/midsummer/pkg/key"
+	"github.com/ghodss/yaml"
 	"golang.org/x/crypto/openpgp"
 	"golang.org/x/crypto/openpgp/armor"
-	"golang.org/x/crypto/openpgp/packet"
+)
+
+const (
+	InputYes = "y\n"
+	InputNo  = "n\n"
 )
 
 func main() {
 
-	// TODO: read in file
+	// read in file
+	data, err := ioutil.ReadFile("example.yaml")
+	if err != nil {
+		panic(err)
+	}
 
-	// TODO: fingerprint and confirm file
+	// fingerprint and confirm file
+	fpr, err := fingerprint.Fingerprint(data)
+	reader := bufio.NewReader(os.Stdin)
+	var in string
+	for {
+		fmt.Printf("\nInput File Fingerprint:\n\n%s\nIs the fingerprint correct?: (y/n) ", fpr)
+		in, err = reader.ReadString('\n')
+		if err != nil {
+			panic(err)
+		}
+		if validInput(in) {
+			break
+		}
+	}
 
+	if strings.ToLower(in) == InputNo {
+		fmt.Println("Input does not match. Exiting...")
+		os.Exit(1)
+	}
 	// TODO: foreach key
 
-	gt := k.Config.Now()
+	keys := key.Keys{}
 
-	config := k.Config
-
-	uid := (*k.UserIds)[0].ToPacket()
-	if uid == nil {
-		return
-	}
-
-	primaryKey, err := rsa.GenerateKey(config.Random(), k.Length)
+	err = yaml.Unmarshal(data, &keys)
 	if err != nil {
-		return
+		panic(err)
 	}
 
-	e := &openpgp.Entity{
-		PrimaryKey: packet.NewRSAPublicKey(gt, &primaryKey.PublicKey),
-		PrivateKey: packet.NewRSAPrivateKey(gt, primaryKey),
-		Identities: make(map[string]*openpgp.Identity),
+	for _, k := range keys {
+
+		prim := k.UserIds.Primary()
+		if prim == nil {
+			panic("No primary user ID set")
+		}
+
+		fmt.Printf("Generating %s\n", prim.Name)
+
+		e, err := k.Generate()
+		if err != nil {
+			panic(err)
+		}
+
+		writePublicFile(e)
+		writePrivateFile(e, k)
+
 	}
 
-	e.Identities[uid.Id] = &openpgp.Identity{
-		Name:          uid.Name,
-		UserId:        uid,
-		SelfSignature: k.GenerateSelfSig(gt, &e.PrimaryKey.KeyId),
-	}
+}
 
-	e.Subkeys, err = k.GenerateSubKeys(gt, e)
+func validInput(s string) bool {
+	s = strings.ToLower(s)
+	valid := s == InputYes || s == InputNo
+	if !valid {
+		fmt.Printf("\n\nInvalid input. Please try again.\n\n")
+	}
+	return valid
+}
+
+func writePrivateFile(e *openpgp.Entity, k key.PrimaryKey) {
+	f, err := os.Create(fmt.Sprintf("private-%s.sec", e.PrimaryKey.KeyIdString()))
 	if err != nil {
-		return
+		panic(err)
 	}
-
-	signingKey := packet.NewRSAPrivateKey(gt, primaryKey)
-
-	for _, id := range e.Identities {
-		err := id.SelfSignature.SignUserId(uid.Id, e.PrimaryKey, signingKey, nil)
-		if err != nil {
-			fmt.Println(err)
-			return
-		}
+	defer f.Close()
+	w, err := armor.Encode(f, openpgp.PrivateKeyType, map[string]string{})
+	if err != nil {
+		panic(err)
 	}
+	defer w.Close()
 
-	// Sign subkeys
-	for _, subkey := range e.Subkeys {
-		err := subkey.Sig.SignKey(subkey.PublicKey, signingKey, nil)
-		if err != nil {
-			log.Fatal(err)
-		}
+	e.SerializePrivate(w, &k.Config)
+}
+
+func writePublicFile(e *openpgp.Entity) {
+	f, err := os.Create(fmt.Sprintf("public-%s.asc", e.PrimaryKey.KeyIdString()))
+	if err != nil {
+		panic(err)
 	}
-
-	buffer := &bytes.Buffer{}
-
-	w, err := armor.Encode(buffer, openpgp.PublicKeyType, map[string]string{})
+	defer f.Close()
+	w, err := armor.Encode(f, openpgp.PublicKeyType, map[string]string{})
+	if err != nil {
+		panic(err)
+	}
+	defer w.Close()
 
 	e.Serialize(w)
-	w.Close()
-
-	r, err := armor.Decode(strings.NewReader(buffer.String()))
-	fromReader := packet.NewReader(r.Body)
-	_, err = openpgp.ReadEntity(fromReader)
-	if err != nil {
-		log.Fatal(err)
-	}
 }
 
-func groupLine(s []string, groupLen int) string {
-	l := len(s)
-	ss := "\t"
-	for i := 0; i < l; i++ {
-		ss += s[i] + " "
-		m := math.Mod(float64(i), float64(groupLen))
-		if m == float64(groupLen-1) {
-			ss += "\n\t"
-		}
-	}
-	return ss
-}
+// 	hashed subpkt 33 len 21 (issuer fpr v4 CC6502CE76FDE7C08F3AFAFFE4B72F09BF26747D)
+// 	hashed subpkt 30 len 1 (features: 01)
+// 	hashed subpkt 23 len 1 (keyserver preferences: 80)

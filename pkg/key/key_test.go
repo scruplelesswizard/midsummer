@@ -2,6 +2,7 @@ package key
 
 import (
 	"testing"
+	"time"
 
 	"github.com/ghodss/yaml"
 )
@@ -20,7 +21,7 @@ func TestKeyUnmarshal(t *testing.T) {
 		t.FailNow()
 	}
 
-	if len(*k.SubKeys) != 2 {
+	if len(*k.SubKeys) != 4 {
 		t.Errorf("subkeys not parsed")
 		t.FailNow()
 	}
@@ -42,7 +43,54 @@ func TestKeyUnmarshal(t *testing.T) {
 
 }
 
+func TestGenerate(t *testing.T) {
+
+	k := PrimaryKey{}
+
+	err := yaml.Unmarshal([]byte(testYAML), &k)
+	if err != nil {
+		t.Error(err)
+	}
+
+	_, err = k.Generate()
+	if err != nil {
+		t.Error(err)
+	}
+
+}
+
+func TestLifetimeSeconds(t *testing.T) {
+	tt, err := time.Parse(time.RFC3339, "2018-12-31T00:00:00-00:00")
+	if err != nil {
+		panic(err)
+	}
+
+	gt := time.Now().UTC()
+
+	k := Key{
+		ExpiryDate: dateOrDuration(tt),
+	}
+
+	sec := k.LifetimeSeconds(gt)
+
+	timeDiff := time.Second * time.Duration(*sec)
+
+	ft := gt.Add(timeDiff)
+
+	if !tt.Round(time.Minute).Equal(ft.Round(time.Minute)) {
+		t.Errorf("time difference not correct: expected %s, got %s", tt.Format(time.RFC3339), ft.Format(time.RFC3339))
+		t.Fail()
+	}
+
+}
+
 const testYAML string = `
+type: RSA
+length: 4096
+usages:
+  - certify
+  - sign
+expirydate: 1M
 userids:
   - name: Test Case
     email: test@test.io
@@ -51,43 +99,44 @@ userids:
   - name: Test Case 2
     email: nocomment@test.io
     primary: false
-type: RSA
-length: 4096
-usages:
-  - certify
-  - sign
-expirydate: 30m
 subkeys:
-  - algorithm: RSA
+  - type: RSA
     length: 4096
     usages:
       - encrypt
-  - algorithm: RSA
+    expirydate: 1d
+  - type: RSA
     length: 4096
     usages:
-      - authenticate`
+      - authenticate
+    expirydate: 1y
+  - type: RSA
+    length: 4096
+    usages:
+      - sign
+      - certify
+    expirydate: 2018-12-31T15:59:59-08:00
+  - type: RSA
+    length: 4096
+    usages:
+      - sign
+      - certify
+    expirydate: 12h
+preferredsymmetric:
+  - 9
+  - 8
+  - 7
+  - 2
+preferredhash:
+  - 10
+  - 9
+  - 8
+  - 11
+  - 2
+preferredcompression:
+  - 2
+  - 3
+  - 1
+`
 
-// const testYAML string = `
-// userids:
-//   - name: Test Case
-//     email: test@test.io
-//     comment: NOT A VALID KEY - DO NOT SIGN
-//     primary: true
-//   - name: Test Case 2
-//     email: nocomment@test.io
-//     primary: false
-// type: RSA
-// length: 4096
-// usages:
-//   - certify
-//   - sign
-// expirydate: 2014-05-16T08:28:06.801064-04:00
-// subkeys:
-//   - algorithm: RSA
-//     length: 4096
-//     usages:
-//       - encrypt
-//   - algorithm: RSA
-//     length: 4096
-//     usages:
-//       - authenticate`
+//

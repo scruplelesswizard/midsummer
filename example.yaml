@@ -16,8 +16,14 @@
 # Keyserver: hkp://pool.sks-keyservers.net
 #
 # Revoker: RSA:{fingerprint}
-
-- userIDs:
+- type: RSA
+  length: 4096
+  usages:
+    - certify
+    - sign
+  # iso-date|(number[d|M|y])
+  expirydate: 1M
+  userids:
     - name: Test Case
       email: test@test.io
       comment: NOT A VALID KEY - DO NOT SIGN
@@ -25,19 +31,29 @@
     - name: Test Case 2
       email: nocomment@test.io
       primary: false
-  algorithm: RSA
-  length: 4096
-  usages:
-    - certify
-    - sign
-# iso-date|(number[d|w|m|y])
-  expiryDate: 90d
   subkeys:
     - type: RSA
       length: 4096
-      usage:
+      usages:
         - encrypt
+      expirydate: 1d
     - type: RSA
       length: 4096
-      usage:
+      usages:
         - authenticate
+      expirydate: 1y
+  preferredsymmetric:
+    - 9
+    - 8
+    - 7
+    - 2
+  preferredhash:
+    - 10
+    - 9
+    - 8
+    - 11
+    - 2
+  preferredcompression:
+    - 2
+    - 3
+    - 1
