@@ -2,7 +2,7 @@ package key
 
 import (
 	"encoding/json"
-	"errors"
+	"fmt"
 	"strings"
 )
 
@@ -33,7 +33,7 @@ func (u *KeyUsage) UnmarshalJSON(b []byte) error {
 	case "authenticate":
 		*u = KeyUsageAuthenticate
 	default:
-		return errors.New("unknown usage type: " + s)
+		return fmt.Errorf("unknown usage type: %s", s)
 	}
 
 	return nil
