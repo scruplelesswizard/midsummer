@@ -122,18 +122,18 @@ subkeys:
       - sign
       - certify
     expires_after: 12h
-preferredsymmetric:
+perferred_symmetric:
   - 9
   - 8
   - 7
   - 2
-preferredhash:
+perferred_hash:
   - 10
   - 9
   - 8
   - 11
   - 2
-preferredcompression:
+perferred_compression:
   - 2
   - 3
   - 1

@@ -9,12 +9,14 @@ import (
 )
 
 type Key struct {
-	Length                                                  int
-	Type                                                    KeyType
-	Usages                                                  KeyUsages
-	ExpiryDate                                              dateOrDuration `json:"expires_after"`
-	Config                                                  packet.Config
-	PreferredSymmetric, PreferredHash, PreferredCompression []uint8
+	Length               int
+	Type                 KeyType
+	Usages               KeyUsages
+	ExpiryDate           dateOrDuration `json:"expires_after"`
+	Config               packet.Config
+	PreferredSymmetric   []uint8 `json:"preferred_symmetric"`
+	PreferredHash        []uint8 `json:"preferred_hash"`
+	PreferredCompression []uint8 `json:"preferred_compression"`
 }
 
 func (k *Key) LifetimeSeconds(gt time.Time) *uint32 {
