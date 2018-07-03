@@ -12,7 +12,7 @@ type Key struct {
 	Length                                                  int
 	Type                                                    KeyType
 	Usages                                                  KeyUsages
-	ExpiryDate                                              dateOrDuration
+	ExpiryDate                                              dateOrDuration `json:"expires_after"`
 	Config                                                  packet.Config
 	PreferredSymmetric, PreferredHash, PreferredCompression []uint8
 }

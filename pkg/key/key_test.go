@@ -90,7 +90,7 @@ length: 4096
 usages:
   - certify
   - sign
-expirydate: 1M
+expires_after: 1M
 userids:
   - name: Test Case
     email: test@test.io
@@ -104,24 +104,24 @@ subkeys:
     length: 4096
     usages:
       - encrypt
-    expirydate: 1d
+    expires_after: 1d
   - type: RSA
     length: 4096
     usages:
       - authenticate
-    expirydate: 1y
+    expires_after: 1y
   - type: RSA
     length: 4096
     usages:
       - sign
       - certify
-    expirydate: 2018-12-31T15:59:59-08:00
+    expires_after: 2018-12-31T15:59:59-08:00
   - type: RSA
     length: 4096
     usages:
       - sign
       - certify
-    expirydate: 12h
+    expires_after: 12h
 preferredsymmetric:
   - 9
   - 8

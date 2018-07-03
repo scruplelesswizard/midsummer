@@ -22,7 +22,7 @@
     - certify
     - sign
   # iso-date|(number[d|M|y])
-  expirydate: 1M
+  expires_after: 1M
   userids:
     - name: Test Case
       email: test@test.io
@@ -36,12 +36,12 @@
       length: 4096
       usages:
         - encrypt
-      expirydate: 1d
+      expires_after: 1d
     - type: RSA
       length: 4096
       usages:
         - authenticate
-      expirydate: 1y
+      expires_after: 1y
   preferredsymmetric:
     - 9
     - 8
