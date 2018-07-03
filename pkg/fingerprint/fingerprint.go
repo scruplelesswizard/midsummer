@@ -19,19 +19,15 @@ func Fingerprint(b []byte) (string, error) {
 	return groupWords(s, " ", 4), nil
 }
 
-func groupWords(s string, separator string, groupLength int) string {
-	splitStrings := strings.Split(s, separator)
-	groupedStrings := "\t"
-	i := 0
-	for _, s := range splitStrings {
-		i++
-		groupedStrings += s
-		if i == groupLength {
-			groupedStrings += "\n\t"
-			i = 0
+func groupWords(s, sep string, size int) string {
+	result := "\t"
+	for i, word := range strings.Split(s, sep) {
+		result += word
+		if i > 0 && i%size == 0 {
+			result += "\n\t"
 		} else {
-			groupedStrings += " "
+			result += " "
 		}
 	}
-	return groupedStrings
+	return result
 }
