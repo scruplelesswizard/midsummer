@@ -1,6 +1,6 @@
 # Midsummer
 
-*_Note:_* Midsummer is alpha and under active development. Expect packages/apis/etc... to change
+_Note:_ Midsummer is *alpha* and under active development. Expect packages/apis/etc... to change
 
 Midsummer is an application designed to simplify the creation of personal cryptographic assets for use in several facets, specifically:
 - Signing
@@ -20,9 +20,10 @@ For now, don't 😅
 Currently the build depends on patches submitted to golang, but not yet accepted. These include:
 
 [openpgp: add FlagsAuthenticate, FlagsGroupKey and FlagsSplitKey support to packet.Signature](https://go-review.googlesource.com/c/crypto/+/120315)
+
 [openpgp: add PreferredKeyServer support to packet.Signature](https://go-review.googlesource.com/c/crypto/+/120555)
 
-You can patch your `/x/crypto` package or wait for them to be upstreamed
+It is recommended _not_ to patch your `x/crypto` packages until these patches have been verified and accepted.
 
 To build the application:
 ```
