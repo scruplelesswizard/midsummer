@@ -1,3 +1,3 @@
-package key
+package gpg
 
 type Keys []PrimaryKey
