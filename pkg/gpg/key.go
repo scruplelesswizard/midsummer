@@ -1,4 +1,4 @@
-package key
+package gpg
 
 import (
 	"crypto/rsa"

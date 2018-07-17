@@ -8,7 +8,7 @@ import (
 	"strings"
 
 	"github.com/chaosaffe/midsummer/pkg/fingerprint"
-	"github.com/chaosaffe/midsummer/pkg/key"
+	"github.com/chaosaffe/midsummer/pkg/gpg"
 	"github.com/ghodss/yaml"
 	"golang.org/x/crypto/openpgp"
 	"golang.org/x/crypto/openpgp/armor"
@@ -48,7 +48,7 @@ func main() {
 	}
 	// TODO: foreach key
 
-	keys := key.Keys{}
+	keys := gpg.Keys{}
 
 	err = yaml.Unmarshal(data, &keys)
 	if err != nil {
@@ -85,7 +85,7 @@ func validInput(s string) bool {
 	return valid
 }
 
-func writePrivateFile(e *openpgp.Entity, k key.PrimaryKey) {
+func writePrivateFile(e *openpgp.Entity, k gpg.PrimaryKey) {
 	f, err := os.Create(fmt.Sprintf("private-%s.sec", e.PrimaryKey.KeyIdString()))
 	if err != nil {
 		panic(err)
