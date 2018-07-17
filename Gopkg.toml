@@ -26,16 +26,20 @@
 
 
 [[constraint]]
-  name = "github.com/davecgh/go-spew"
-  version = "1.1.0"
+  branch = "master"
+  name = "github.com/chaosaffe/pgpwordlist"
+
+[[constraint]]
+  name = "github.com/ghodss/yaml"
+  version = "1.0.0"
 
 [[constraint]]
   branch = "master"
   name = "golang.org/x/crypto"
 
 [[constraint]]
-  name = "gopkg.in/yaml.v2"
-  version = "2.2.1"
+  name = "pault.ag/go/ykpiv"
+  version = "1.1.0"
 
 [prune]
   go-tests = true

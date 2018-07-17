@@ -2,10 +2,16 @@
 
 
 [[projects]]
-  name = "github.com/davecgh/go-spew"
-  packages = ["spew"]
-  revision = "346938d642f2ec3594ed81d874461961cd0faa76"
-  version = "v1.1.0"
+  branch = "master"
+  name = "github.com/chaosaffe/pgpwordlist"
+  packages = ["."]
+  revision = "da6dd39aba1f7bd74add0584387eb7a0e0d31d05"
+
+[[projects]]
+  name = "github.com/ghodss/yaml"
+  packages = ["."]
+  revision = "0ca9ea5df5451ffdf184b4428c902747c2c11cd7"
+  version = "v1.0.0"
 
 [[projects]]
   branch = "master"
@@ -17,7 +23,8 @@
     "openpgp/elgamal",
     "openpgp/errors",
     "openpgp/packet",
-    "openpgp/s2k"
+    "openpgp/s2k",
+    "pbkdf2"
   ]
   revision = "a49355c7e3f8fe157a85be2f77e6e269a0f89602"
 
@@ -27,9 +34,19 @@
   revision = "5420a8b6744d3b0345ab293f6fcba19c978f1183"
   version = "v2.2.1"
 
+[[projects]]
+  name = "pault.ag/go/ykpiv"
+  packages = [
+    ".",
+    "internal/bytearray",
+    "internal/pkcs1v15"
+  ]
+  revision = "f28518f20029f7ed12a8ced4fbce8c86981b4c5c"
+  version = "1.1"
+
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "cee637062656424ad2179eb2893d8ec099fc25f9664911b56ed38f6377c052e4"
+  inputs-digest = "b22f1b89fa6e01cade45e3b9a4486296a4e03c8fea89a19e874b128783020eaf"
   solver-name = "gps-cdcl"
   solver-version = 1
